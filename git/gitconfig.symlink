@@ -1,0 +1,25 @@
+[user]
+    name = Alex Martins
+    email = amartinsn@gmail.com
+
+[core]
+    editor = "nvim"
+
+[push]
+    default = matching
+
+[alias]
+    co = checkout
+    ci = commit -S --verbose
+    st = status
+    br = branch
+    lola = log --graph --decorate --oneline --all
+    dci = duet-commit --verbose
+    dca = duet-commit --amend --reset-author --verbose
+    flog = log --pretty=fuller --decorate
+
+[color]
+    branch = auto
+    diff = auto
+    interactive = auto
+    status = auto

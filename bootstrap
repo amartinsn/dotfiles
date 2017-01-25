@@ -1,0 +1,56 @@
+#!/bin/bash
+
+set -e
+
+success () {
+   printf "\r\033[2K  [ \033[00;32mOK\033[0m ] %s \n" $1
+}
+
+fail () {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] %s \n" $1
+  echo ''
+  exit
+}
+
+update_symlinks() {
+  for file in $(find `pwd` -name "*.symlink")
+  do
+    destination="$HOME/.`basename \"${file%.*}\"`"
+
+    # Create a backup if a file exists
+    if [[  -f $destination ]] || [[ -L $destination ]]
+    then
+      mv $destination "${destination}.backup"
+    fi
+
+    # Move file
+    ln -s  $file $destination
+    success "Linked $file to $destination"
+  done
+}
+
+install_scripts() {
+  for file in $(find `pwd` -maxdepth 3 -name "install")
+  do
+    sh -c $file
+  done
+}
+
+update_functions() {
+  fcs=`pwd`/functions
+  for file in $(ls ${fcs})
+  do
+    rm -rf /usr/local/bin/${file}
+    ln -s ${fcs}/${file} /usr/local/bin
+  done
+}
+
+configure_vim() {
+  git submodule update --init --recursive
+  sh -c vim/vimfiles/install
+}
+
+update_symlinks
+install_scripts
+update_functions
+configure_vim
